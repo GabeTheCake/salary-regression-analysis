@@ -49,7 +49,7 @@ Este projeto foi desenvolvido como parte de um portfólio para demonstrar habili
 ## 📁 Estrutura do Projeto
 
 ```
-Projeto 6 - Analise de salarios/
+salary-regression-analysis/
 │
 ├── data/
 │   ├── income.csv
