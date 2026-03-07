@@ -6,7 +6,6 @@ from src.load_data import carregar_dados
 from src.feature_engineering import aplicar_features
 from src.analysis import contagem_experiencia
 
-# Configuração da página
 st.set_page_config(
     page_title="Portfolio | Análise de Renda",
     page_icon="📊",
@@ -14,7 +13,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Estilização Customizada (CSS)
 st.markdown("""
     <style>
     .main {
@@ -43,37 +41,30 @@ def main(df):
     df = aplicar_features(df)
     df_contagem = contagem_experiencia(df)
 
-    # --- SIDEBAR ---
     st.sidebar.title("Filtros de Análise")
     st.sidebar.markdown("Use os filtros abaixo para refinar os dados visualizados.")
     
-    # Filtro de Experiência
     niveis = st.sidebar.multiselect(
         "Nível de Experiência",
         options=sorted(df_contagem['nivel_de_experiencia'].dropna().unique()),
         default=sorted(df_contagem['nivel_de_experiencia'].dropna().unique())
     )
     
-    # Filtro de Idade
     idade_min, idade_max = int(df['idade'].min()), int(df['idade'].max())
     filtro_idade = st.sidebar.slider("Faixa Etária", idade_min, idade_max, (idade_min, idade_max))
 
-    # Aplicando filtros
     df_filtered = df[
         (df['nivel_de_experiencia'].isin(niveis)) & 
         (df['idade'].between(filtro_idade[0], filtro_idade[1]))
     ]
 
-    # --- CORPO PRINCIPAL ---
     st.title("📊 Dashboard de Análise de Renda e Experiência")
     
-    # Seção de Contexto
     st.markdown("""
         Este dashboard apresenta uma análise profunda sobre a estrutura remuneratória. 
         O objetivo é responder a perguntas estratégicas sobre carreira, senioridade e retorno financeiro sobre o tempo investido.
     """)
 
-    # Linha 1: Métricas Principais
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.metric("Renda Média", safe_metric(df_filtered['renda_anual'].mean(), "R$ {:,.2f}"))
@@ -86,11 +77,9 @@ def main(df):
 
     st.markdown("---")
 
-    # --- SEÇÃO DE PERGUNTAS E RESPOSTAS (INSIGHTS) ---
     st.subheader("💡 Conclusões da Análise")
     
     with st.container():
-        # Pergunta 1
         st.markdown("**Como o nível de experiência impacta a renda anual dos funcionários?**")
         st.write("""
             O impacto é direto e escalonável. Observa-se que a transição entre níveis (ex: Sênior para Especialista) 
@@ -98,15 +87,13 @@ def main(df):
             alavancador de renda nesta base de dados.
         """)
         
-        # Pergunta 2
         st.markdown("**Qual a relação entre tempo de experiência e crescimento salarial?**")
         st.write("""
             Existe uma correlação positiva clara, porém não linear. O crescimento é mais acentuado nos primeiros 10 anos, 
             estabilizando em patamares elevados após a maturidade profissional. O tempo de casa atua como um validador 
             de senioridade que reflete no bônus de renda anual.
         """)
-        
-        # Pergunta 3
+
         st.markdown("**Vale mais contratar profissionais experientes ou investir em juniores?**")
         st.write("""
             **Depende do objetivo:** Profissionais experientes (Especialistas/Sêniores) entregam maior valor imediato e 
@@ -117,7 +104,6 @@ def main(df):
 
     st.markdown("---")
 
-    # Linha 2: Gráficos Principais
     st.subheader("Visualização dos Dados")
     c1, c2 = st.columns(2)
     ordem = ['Junior', 'Pleno', 'Sênior', 'Especialista']
@@ -150,7 +136,6 @@ def main(df):
         )
         st.plotly_chart(fig_scatter, width='stretch')
 
-    # Linha 3: Análise de Eficiência e Tempo
     c3, c4 = st.columns([1, 1])
 
     with c3:
